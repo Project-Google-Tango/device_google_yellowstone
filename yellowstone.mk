@@ -1,13 +1,11 @@
 # Inherit from those products. Most specific first.
-$(call inherit-product, $(SRC_TARGET_DIR)/product/generic_no_telephony.mk)
+$(call inherit-product, $(SRC_TARGET_DIR)/product/full_base.mk)
+$(call inherit-product, $(SRC_TARGET_DIR)/product/telephony.mk)
+
 $(call inherit-product, $(SRC_TARGET_DIR)/product/languages_full.mk)
 
 # Inherit device configuration
 $(call inherit-product, device/google/yellowstone/device.mk)
-
-## All essential packages
-$(call inherit-product, $(SRC_TARGET_DIR)/product/generic.mk)
-$(call inherit-product, $(SRC_TARGET_DIR)/product/aosp_base.mk)
 
 # Device identifier. This must come after all inclusions
 PRODUCT_NAME := yellowstone
