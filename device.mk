@@ -19,18 +19,20 @@
 
 # Built in opengapps nano
 
-GAPPS_VARIANT := full
+GAPPS_VARIANT := nano
 
 # Yellowstone has a custom patched webview for egl sync erros DO NOT build WebViewGoogle
 GAPPS_EXCLUDED_PACKAGES := \
 	WebViewGoogle \
-	Chrome
+        PlusOne
 
 $(call inherit-product, vendor/opengapps/build/opengapps-packages.mk)
 
-# Screen density
-PRODUCT_AAPT_PREF_CONFIG := xxhdpi
-PRODUCT_AAPT_CONFIG := normal
+PRODUCT_AAPT_CONFIG += xlarge large
+TARGET_SCREEN_HEIGHT := 1920
+TARGET_SCREEN_WIDTH := 1200
+
+$(call inherit-product, frameworks/native/build/phone-xhdpi-2048-dalvik-heap.mk)
 
 TARGET_TEGRA_VERSION := t124
 
@@ -43,9 +45,6 @@ PRODUCT_COPY_FILES += \
 
 # Set up device overlays
 DEVICE_PACKAGE_OVERLAYS += $(LOCAL_PATH)/overlay
-
-
-$(call inherit-product, frameworks/native/build/tablet-10in-xhdpi-2048-dalvik-heap.mk)
 
 # GPS
 PRODUCT_COPY_FILES += \
@@ -118,13 +117,6 @@ PRODUCT_PACKAGES += \
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/wifi/wifi_loader.sh:system/bin/wifi_loader.sh
 
-PRODUCT_PROPERTY_OVERRIDES += \
-    wifi.interface=wlan0
-
-# DHCP
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/wifi/dhcpcd.conf:system/etc/dhcpcd/dhcpcd.conf
-
 # Allow tethering without provisioning app
 PRODUCT_PROPERTY_OVERRIDES += \
     net.tethering.noprovisioning=true
@@ -162,10 +154,18 @@ PRODUCT_PACKAGES += \
     com.android.location.provider
 
 RRODUCT_PACKAGES += \
+    Chrome \
     setup_fs \
     e2fsck \
     drmserver \
     libdrmframework_jni
+
+# Filesystem management tools
+PRODUCT_PACKAGES += \
+    setup_fs
+
+# Radio Interface
+PRODUCT_PACKAGES += rild
 
 ENABLE_WIDEVINE_DRM := true
 ifeq ($(ENABLE_WIDEVINE_DRM),true)
@@ -182,7 +182,8 @@ TARGET_POWERHAL_VARIANT := tegra
 
 # vendor HALs
 PRODUCT_PACKAGES += \
-    power.tegra
+    power.tegra \
+    lights.tegra
 
 # Audio
 PRODUCT_COPY_FILES += \
@@ -207,24 +208,18 @@ PRODUCT_PACKAGES += \
     libstagefrighthw \
     enctune.conf
 
-# Add props used in stock
-PRODUCT_PROPERTY_OVERRIDES += \
-    ro.vold.wipe_on_crypt_fail=1 \
-    ro.com.widevine.cachesize=16777216 \
-    drm.service.enabled=true \
-    media.stagefright.cache-params=10240/20480/15 \
-    media.aac_51_output_enabled=true \
-    dalvik.vm.implicit_checks=none
-
-
 # NVIDIA hardware support
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/ussrd.conf:system/etc/ussrd.conf \
     $(LOCAL_PATH)/set_hwui_params.sh:system/bin/set_hwui_params.sh \
+    $(LOCAL_PATH)/set_light_sensor_perm.sh:system/bin/set_light_sensor_perm.sh \
+    $(LOCAL_PATH)/input_cfboost_init.sh:system/bin/input_cfboost_init.sh \
+    $(LOCAL_PATH)/ussr_setup.sh:system/bin/ussr_setup.sh \
     $(LOCAL_PATH)/power.ardbeg.rc:system/etc/power.ardbeg.rc \
     $(LOCAL_PATH)/nvcms/device.cfg:system/lib/nvcms/device.cfg \
     $(LOCAL_PATH)/graphics/com.nvidia.graphics.xml:system/etc/permissions/com.nvidia.graphics.xml \
-    $(LOCAL_PATH)/graphics/com.nvidia.miracast.xml:system/etc/permissions/com.nvidia.miracast.xml
+    $(LOCAL_PATH)/graphics/com.nvidia.miracast.xml:system/etc/permissions/com.nvidia.miracast.xml \
+    $(LOCAL_PATH)/graphics/com.nvidia.nvsi.xml:system/etc/permissions/com.nvidia.nvsi.xml
 
 PRODUCT_PACKAGES += \
     lbh_images
@@ -248,15 +243,8 @@ endif
 
 PRODUCT_CHARACTERISTICS := tablet
 
-
-# set default USB configuration
-PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
-    persist.sys.usb.config=mtp,adb \
-    ro.adb.secure=0
-
 # Call the proprietary setup
 $(call inherit-product, vendor/google/yellowstone/yellowstone-vendor.mk)
-$(call inherit-product, vendor/sierra/qualcomm/sierra-vendor.mk)
 $(call inherit-product, vendor/google/widevine/widevine.mk)
 
 

@@ -36,10 +36,13 @@ TARGET_TEGRA_FAMILY := t12x
 TARGET_BOOTLOADER_BOARD_NAME := ardbeg
 
 TARGET_KERNEL_DT_NAME := tegra124-ardbeg
+TARGET_TEGRA_VERSION := t124
 
 # Kernel cmdline
-TARGET_KERNEL_SOURCE := kernel/google/hw
-TARGET_KERNEL_CONFIG := yellowstone_defconfig
+#TARGET_KERNEL_SOURCE := kernel/google/master
+#TARGET_KERNEL_SOURCE := kernel/google/linux-3.10
+#TARGET_KERNEL_CONFIG := tegra12_android_defconfig
+#TARGET_KERNEL_CONFIG := yellowstone_defconfig
 BOARD_KERNEL_CMDLINE := androidboot.selinux=permissive androidboot.ccihwid=6
 #usb_port_owner_info=0
 
@@ -54,6 +57,7 @@ TARGET_CPU_SMP := true
 # powerhal
 BOARD_USES_POWERHAL := true
 TARGET_POWERHAL_VARIANT := tegra
+TARGET_SENSOR_VARIANT := tegra
 
 BOARD_USES_GENERIC_AUDIO := false
 BOARD_USES_ALSA_AUDIO := true
